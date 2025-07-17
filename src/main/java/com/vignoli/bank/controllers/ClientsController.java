@@ -1,10 +1,10 @@
 package com.vignoli.bank.controllers;
 
 import com.vignoli.bank.models.Client;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.apache.catalina.connector.Response;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +36,35 @@ public class ClientsController {
             }
         }
         return null;
+    }
+
+    @PostMapping
+    public Client createClient(@RequestBody Client client) {
+        client.setId(clients.size() + 1);
+        clients.add(client);
+        return client;
+    }
+
+    @DeleteMapping("/{clientId}")
+    public ResponseEntity<Void> deleteClient(@PathVariable Integer clientId) {
+        for (Client client: clients) {
+            if (Objects.equals(client.getId(), clientId)) {
+                clients.remove(client);
+                return ResponseEntity.status(204).build();
+            }
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
+    @PutMapping("/{clientId}")
+    public Object updateClient(@PathVariable Integer clientId, @RequestBody Client body) {
+        for (Client client: clients) {
+            if (Objects.equals(client.getId(), clientId)) {
+                client.setName(body.getName());
+                return client;
+            }
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
 }
