@@ -33,19 +33,31 @@ public class Account {
         return transactions;
     }
 
-    public void deposit(Double value) {
+    public String deposit(Double value) {
         Transaction transaction = new Transaction(transactions.size() + 1, "Deposit", balance, balance + value);
         transactions.add(transaction);
         balance += value;
+        return "Deposito realizado com sucesso.";
     }
 
-    public void withdraw(Double value) {
-        if (balance > 0) {
+    public String withdraw(Double value) {
+        if (balance > 0 && balance > value) {
             Transaction transaction = new Transaction(transactions.size() + 1, "Withdraw", balance, balance - value);
             transactions.add(transaction);
             balance -= value;
+            return "Saque realizado com sucesso.";
         } else {
-            System.out.println("Saldo Insuficiente para Saque.");
+            return "Saldo Insuficiente para Saque.";
         }
     }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
+
 }

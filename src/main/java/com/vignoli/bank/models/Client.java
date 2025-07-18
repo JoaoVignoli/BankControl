@@ -30,4 +30,8 @@ public class Client {
     public void setId(Integer id) {
         this.id = id;
     }
+
+    public void setTaxId(String taxId) {
+        this.taxId = taxId;
+    }
 }

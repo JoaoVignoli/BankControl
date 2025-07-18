@@ -29,20 +29,20 @@ public class ClientsController {
     }
 
     @GetMapping("/{clientId}")
-    public Client getClient(@PathVariable Integer clientId) {
+    public Object getClient(@PathVariable Integer clientId) {
         for (Client client: clients) {
             if (Objects.equals(client.getId(), clientId)) {
                 return client;
             }
         }
-        return null;
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @PostMapping
-    public Client createClient(@RequestBody Client client) {
-        client.setId(clients.size() + 1);
-        clients.add(client);
-        return client;
+    public Client createClient(@RequestBody Client clientBody) {
+        clientBody.setId(clients.getLast().getId() + 1);
+        clients.add(clientBody);
+        return clientBody;
     }
 
     @DeleteMapping("/{clientId}")
@@ -61,6 +61,7 @@ public class ClientsController {
         for (Client client: clients) {
             if (Objects.equals(client.getId(), clientId)) {
                 client.setName(body.getName());
+                client.setTaxId(body.getTaxId());
                 return client;
             }
         }

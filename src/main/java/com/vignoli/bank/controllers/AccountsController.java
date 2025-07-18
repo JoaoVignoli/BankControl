@@ -1,12 +1,13 @@
 package com.vignoli.bank.controllers;
 
+import com.google.gson.Gson;
+import com.vignoli.bank.dtos.TransactionDto;
 import com.vignoli.bank.models.Account;
 import com.vignoli.bank.models.Client;
 import com.vignoli.bank.models.Transaction;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,13 +43,13 @@ public class AccountsController {
     }
 
     @GetMapping("/{accountId}")
-    public Account getAccount(@PathVariable Integer accountId) {
+    public Object getAccount(@PathVariable Integer accountId) {
         for (Account account: accounts) {
             if (Objects.equals(account.getId(), accountId)) {
                 return account;
             }
         }
-        return null;
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @GetMapping("/{accountId}/balance")
@@ -72,7 +73,7 @@ public class AccountsController {
     }
 
     @GetMapping("/{accountId}/transactions/{transactionId}/details")
-    public Transaction getTrasactionDetail(@PathVariable Integer accountId, @PathVariable Integer transactionId) {
+    public Object getTrasactionDetail(@PathVariable Integer accountId, @PathVariable Integer transactionId) {
         for (Account account: accounts) {
             if (Objects.equals(account.getId(), accountId)) {
                 ArrayList<Transaction> accountTransactions = account.getTransactions();
@@ -83,6 +84,46 @@ public class AccountsController {
                 }
             }
         }
-        return null;
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
+    @PostMapping
+    public Account createAccount(@RequestBody Account accountBody) {
+        accountBody.setId(accounts.getLast().getId() + 1);
+        accounts.add(accountBody);
+        return accountBody;
+    }
+
+    @DeleteMapping("/{accountId}")
+    public ResponseEntity<Void> deleteAccount(@PathVariable Integer accountId) {
+        for (Account account: accounts) {
+            if (Objects.equals(account.getId(), accountId)) {
+                accounts.remove(account);
+                return ResponseEntity.status(204).build();
+            }
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
+    @PostMapping("/{accountId}/deposit")
+    public ResponseEntity<String> deposit(@PathVariable Integer accountId, @RequestBody TransactionDto transactionDto) {
+        for (Account account: accounts) {
+            if (Objects.equals(account.getId(), accountId)) {
+                String operationReturn = account.deposit(transactionDto.value());
+                return ResponseEntity.ok(operationReturn);
+            }
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
+    @PostMapping("/{accountId}/withdraw")
+    public ResponseEntity<String> withdraw(@PathVariable Integer accountId, @RequestBody TransactionDto transactionDto) {
+        for (Account account: accounts) {
+            if (Objects.equals(account.getId(), accountId)) {
+                String operationReturn = account.withdraw(transactionDto.value());
+                return ResponseEntity.ok(operationReturn);
+            }
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 }
