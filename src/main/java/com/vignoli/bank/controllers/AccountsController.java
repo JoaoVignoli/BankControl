@@ -1,6 +1,5 @@
 package com.vignoli.bank.controllers;
 
-import com.google.gson.Gson;
 import com.vignoli.bank.dtos.TransactionDto;
 import com.vignoli.bank.models.Account;
 import com.vignoli.bank.models.Client;
