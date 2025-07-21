@@ -1,9 +1,17 @@
 package com.vignoli.bank.models;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
+@Entity
 public class Client {
+    @Id
     private Integer id;
     private String name;
     private String taxId;
+
+    public Client() {
+    }
 
     public Client(Integer id, String name, String taxId) {
         this.id = id;

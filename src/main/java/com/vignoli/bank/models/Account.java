@@ -1,15 +1,20 @@
 package com.vignoli.bank.models;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
 import java.util.ArrayList;
 
+@Entity
 public class Account {
+    @Id
     private Integer id;
     private Client client;
     private Double balance;
     private final ArrayList<Transaction> transactions = new ArrayList<>();
+
+    public Account() {
+    }
 
     public Account(Client client, Integer id) {
         this.client = client;
